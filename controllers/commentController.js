@@ -6,8 +6,8 @@ const commentModel = sequelize.import('../models/commentModel');
 router.post('/create', (req, res) => {
     const commentFromRequest = {
         content: req.body.comment.content,
-        owner: req.user.id,
-        dreamID: req.body.comment.dreamID
+        userId: req.user.id,
+        dreamId: req.body.comment.dreamId
     }
     commentModel.create(commentFromRequest)
         .then(comment => res.status(200).json(comment))
@@ -17,8 +17,10 @@ router.post('/create', (req, res) => {
 });
 
 
-router.put('/update', (req, res) => {
-    commentModel.update(req.body.comment, { where: { id: req.params.id } })
+router.put('/update/:id', (req, res) => {
+    commentModel.update({
+        content: req.body.comment.content
+    }, { where: { id: req.params.id }, returning: true})
         .then(comment => res.status(200).json(comment))
         .catch(err => res.json({
             error: err
@@ -26,13 +28,13 @@ router.put('/update', (req, res) => {
 });
 
 
-router.delete('/delete', (req, res) => {
+router.delete('/delete/:id', (req, res) => {
     commentModel.destroy({
         where: {
             id: req.params.id
-        }
+        }, returning: true
     })
-        .then(review => res.status(200).json(review))
+        .then(comment => res.status(200).json(comment))
         .catch(err => res.json({
             error: err
         }))
