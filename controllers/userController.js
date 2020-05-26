@@ -4,14 +4,16 @@ const sequelize = require('../db');
 const userModel = sequelize.import('../models/userModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const validateSession = require('../middleware/validate-session');
 
 /* *************************
  *** GET USER ***
 ************************** */
 
-router.get('/:id', (req, res) => {
-    User.findOne({
-        where: { id: req.params.id }
+router.get('/get', validateSession, (req, res) => {
+    userModel.findOne({
+        where: { id: req.params.id },
+        include: ["dreams", "comments"]
     })
     .then(user => res.status(200).json(user))
     .catch(err => res.status(500).json({error: err}))
@@ -24,14 +26,15 @@ router.get('/:id', (req, res) => {
 router.post('/create', (req, res) => {
     let username = req.body.username;
     let password = req.body.password;
-    let isAdmin = false;
     let nsfwOk = req.body.nsfwOk;
+    let profilePic = req.body.profilePic;
   
-    User.create({
+    userModel.create({
       username: username,
-      passwordhash: bcrypt.hashSync(pass, 13),
+      passwordhash: bcrypt.hashSync(password, 13),
       isAdmin: false,
-      nsfwOk: nsfwOk
+      nsfwOk: nsfwOk,
+      profilePic: profilePic
     }).then(
       function createSuccess(user) {
         let token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: 60 * 60 * 24 });
@@ -55,16 +58,16 @@ router.post('/create', (req, res) => {
   ************************** */
   
   router.post('/login', (req, res) => {
-    User.findOne({ 
+    userModel.findOne({ 
         where: { username: req.body.username } 
     }).then(
       function (user) {
         if (user) {
-          bcrypt.compare(req.body.password, passwordhash, function (err, matches) {
+          bcrypt.compare(req.body.password, user.passwordhash, function (err, matches) {
             if (matches) {
               let token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: 60 * 60 * 24 });
               res.json({
-                user: user,
+                user: user.username,
                 message: "Dreamer successfully authenticated!",
                 sessionToken: token
               });
@@ -87,7 +90,7 @@ router.post('/create', (req, res) => {
   ************************** */
 
  router.delete("/delete/:id", validateSession, (req, res) => {
-    User.destroy({where: { 
+    userModel.destroy({where: { 
       id: req.params.id
     },
     returning: true 
@@ -101,13 +104,13 @@ router.post('/create', (req, res) => {
   ************************** */
 
 router.put('/update/:id', validateSession, (req, res) => {
-    User.update(req.body.user, {
+    userModel.update(req.body, {
         where: { 
-          id: req.params.id
+          id: req.user.id
         }, 
         returning:true 
     })
-        .then(log => res.status(200).json(log))
+        .then(user => res.status(200).json(user))
         .catch(err => res.status(500).json({ error: err }))
   });
 

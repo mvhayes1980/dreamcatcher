@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('log', {
+    return sequelize.define('dream', {
         content: {
             type: DataTypes.STRING,
             allowNull: false
