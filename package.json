@@ -1,13 +1,13 @@
 {
-  "name": "workoutlogserver",
+  "name": "dreamcatcherserver",
   "version": "1.0.0",
-  "description": "server for workout log app",
+  "description": "server for the dreamcatcher app",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./node_modules/http-server/bin/http-server"
   },
-  "author": "Tim Culp",
+  "author": "Jerad Lollar",
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
