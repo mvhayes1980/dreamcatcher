@@ -8,11 +8,11 @@ router.post('/create', (req, res) => {
         userId: req.user.id,
         content: req.body.dream.content,
         category: req.body.dream.category,
-        isNSFW: req.body.dream.isNSFW,
+        isNSFW: req.body.dream.isNSFW
     })
-        .then(response => {
-            res.status(200).send({ response: response })
-        })
+    .then(response => {
+        res.status(200).send({response: response})
+    })
 })
 
 router.get('/:category', (req, res) => {
@@ -21,9 +21,9 @@ router.get('/:category', (req, res) => {
             category: req.params.category
         }
     })
-        .then(response => {
-            res.status(200).send({ response: response })
-        })
+    .then(response => {
+        res.status(200).send({response: response})
+    })
 })
 
 router.put('/update/:id', (req, res) => {
@@ -37,37 +37,32 @@ router.put('/update/:id', (req, res) => {
             userId: req.user.id
         }
     })
-        .then(response => {
-            if (response > 0) {
-                res.status(200).send({
-                    message: "Successfully updated!", response: {
-                        category: req.body.dream.category,
-                        content: req.body.dream.content,
-                        isNSFW: req.body.dream.isNSFW
-                    }
-                })
-            } else {
-                res.status(401).send({ message: "Update failed." })
-            }
-        })
+    .then(response => {
+        if (response > 0) {
+            res.status(200).send({message: "Successfully updated!", response: {
+                category: req.body.dream.category,
+                content: req.body.dream.content,
+                isNSFW: req.body.dream.isNSFW
+            }})
+        } else {
+            res.status(401).send({message: "Update failed."})
+        }
+    })
 })
 
 router.delete('/delete/:id', (req, res) => {
-    dreamModel.destroy({
-        where: {
-            id: req.params.id,
-            userId: req.user.id
+    dreamModel.destroy({where: {
+        id: req.params.id,
+        userId: req.user.id
+    }})
+    .then(response => {
+        if (response > 0) {
+            res.status(200).send({message: "Successfully deleted!",
+            })
+        } else {
+            res.status(401).send({message: "Delete failed."})
         }
     })
-        .then(response => {
-            if (response > 0) {
-                res.status(200).send({
-                    message: "Successfully deleted!",
-                })
-            } else {
-                res.status(401).send({ message: "Delete failed." })
-            }
-        })
 })
 
 module.exports = router;

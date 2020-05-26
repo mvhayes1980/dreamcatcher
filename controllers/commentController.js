@@ -13,14 +13,14 @@ router.post('/create', (req, res) => {
         .then(comment => res.status(200).json(comment))
         .catch(err => res.status(500).json({
             error: err
-        }))
+        }))   
 });
 
 
 router.put('/update/:id', (req, res) => {
     commentModel.update({
         content: req.body.comment.content
-    }, { where: { id: req.params.id }, returning: true })
+    }, { where: { id: req.params.id }, returning: true})
         .then(comment => res.status(200).json(comment))
         .catch(err => res.json({
             error: err

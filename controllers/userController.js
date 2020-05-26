@@ -12,8 +12,8 @@ const validateSession = require('../middleware/validate-session');
 
 router.get('/get', validateSession, (req, res) => {
     userModel.findOne({
-        where: { id: req.params.id },
-        include: ["dreams", "comments"]
+        where: { id: req.user.id },
+        include: ['dreams', 'comments']
     })
     .then(user => res.status(200).json(user))
     .catch(err => res.status(500).json({error: err}))
@@ -103,7 +103,7 @@ router.post('/create', (req, res) => {
    *** UPDATE USER ***
   ************************** */
 
-router.put('/update/:id', validateSession, (req, res) => {
+router.put('/update', validateSession, (req, res) => {
     userModel.update(req.body, {
         where: { 
           id: req.user.id
