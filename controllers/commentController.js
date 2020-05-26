@@ -17,7 +17,7 @@ router.post('/create', (req, res) => {
 });
 
 
-router.put('/update', (req, res) => {
+router.put('/update/:id', (req, res) => {
     commentModel.update(req.body.comment, { where: { id: req.params.id } })
         .then(comment => res.status(200).json(comment))
         .catch(err => res.json({
@@ -26,7 +26,7 @@ router.put('/update', (req, res) => {
 });
 
 
-router.delete('/delete', (req, res) => {
+router.delete('/delete/:id', (req, res) => {
     commentModel.destroy({
         where: {
             id: req.params.id
