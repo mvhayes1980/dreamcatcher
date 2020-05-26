@@ -6,7 +6,7 @@ const dreamModel = sequelize.import('../models/dreamModel');
 //insert endpoints here
 router.post('/create', (req, res) => {
     dreamModel.create({
-        owner: req.user.id,
+        userId: req.user.id,
         content: req.body.dream.content,
         category: req.body.dream.category,
         isNSFW: req.body.dream.isNSFW
@@ -27,7 +27,7 @@ router.get('/:category', (req, res) => {
     })
 })
 
-router.put('/update/:id', (req, res) {
+router.put('/update/:id', (req, res) => {
     dreamModel.update({
         category: req.body.dream.category,
         content: req.body.dream.content,
@@ -35,7 +35,7 @@ router.put('/update/:id', (req, res) {
     }, {
         where: {
             id: req.params.id,
-            owner: req.user.id
+            userId: req.user.id
         }
     })
     .then(response => {
@@ -51,10 +51,10 @@ router.put('/update/:id', (req, res) {
     })
 })
 
-router.delete('/delete:id', (req, res) => {
+router.delete('/delete/:id', (req, res) => {
     dreamModel.destroy({where: {
         id: req.params.id,
-        owner: req.user.id
+        userId: req.user.id
     }})
     .then(response => {
         if (response > 0) {

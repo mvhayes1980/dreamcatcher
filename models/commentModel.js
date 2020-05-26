@@ -1,15 +1,7 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('log', {
+    return sequelize.define('comment', {
         content: {
             type: DataTypes.STRING,
-            allowNull: false
-        },
-        owner: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
-        dreamID: {
-            type: DataTypes.INTEGER,
             allowNull: false
         }
     })
