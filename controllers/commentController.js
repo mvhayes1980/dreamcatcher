@@ -18,26 +18,49 @@ router.post('/create', (req, res) => {
 
 
 router.put('/update/:id', (req, res) => {
-    commentModel.update({
-        content: req.body.comment.content
-    }, { where: { id: req.params.id }, returning: true})
-        .then(comment => res.status(200).json(comment))
-        .catch(err => res.json({
-            error: err
-        }))
+    if (req.user.isAdmin) {
+        commentModel.update({
+            content: req.body.comment.content
+        }, { where: { id: req.params.id }, returning: true})
+            .then(comment => res.status(200).json(comment))
+            .catch(err => res.json({
+                error: err
+            }))
+    } else {
+        commentModel.update({
+            content: req.body.comment.content
+        }, { where: { id: req.params.id, userId: req.user.id }, returning: true})
+            .then(comment => res.status(200).json(comment))
+            .catch(err => res.json({
+                error: err
+            }))
+    }
 });
 
 
 router.delete('/delete/:id', (req, res) => {
-    commentModel.destroy({
-        where: {
-            id: req.params.id
-        }, returning: true
-    })
-        .then(comment => res.status(200).json(comment))
-        .catch(err => res.json({
-            error: err
-        }))
+    if (req.user.isAdmin) {
+        commentModel.destroy({
+            where: {
+                id: req.params.id
+            }, returning: true
+        })
+            .then(comment => res.status(200).json(comment))
+            .catch(err => res.json({
+                error: err
+            }))
+    } else {
+        commentModel.destroy({
+            where: {
+                id: req.params.id,
+                userId: req.user.id
+            }, returning: true
+        })
+            .then(comment => res.status(200).json(comment))
+            .catch(err => res.json({
+                error: err
+            }))
+    }
 });
 
 

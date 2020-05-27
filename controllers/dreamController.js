@@ -27,42 +27,79 @@ router.get('/:category', (req, res) => {
 })
 
 router.put('/update/:id', (req, res) => {
-    dreamModel.update({
-        category: req.body.dream.category,
-        content: req.body.dream.content,
-        isNSFW: req.body.dream.isNSFW
-    }, {
-        where: {
-            id: req.params.id,
-            userId: req.user.id
-        }
-    })
-    .then(response => {
-        if (response > 0) {
-            res.status(200).send({message: "Successfully updated!", response: {
-                category: req.body.dream.category,
-                content: req.body.dream.content,
-                isNSFW: req.body.dream.isNSFW
-            }})
-        } else {
-            res.status(401).send({message: "Update failed."})
-        }
-    })
+    if (req.user.isAdmin) {
+        dreamModel.update({
+            category: req.body.dream.category,
+            content: req.body.dream.content,
+            isNSFW: req.body.dream.isNSFW
+        }, {
+            where: {
+                id: req.params.id
+            }
+        })
+        .then(response => {
+            if (response > 0) {
+                res.status(200).send({message: "Successfully updated!", response: {
+                    category: req.body.dream.category,
+                    content: req.body.dream.content,
+                    isNSFW: req.body.dream.isNSFW
+                }})
+            } else {
+                res.status(401).send({message: "Update failed."})
+            }
+        })
+    } else {
+        dreamModel.update({
+            category: req.body.dream.category,
+            content: req.body.dream.content,
+            isNSFW: req.body.dream.isNSFW
+        }, {
+            where: {
+                id: req.params.id,
+                userId: req.user.id
+            }
+        })
+        .then(response => {
+            if (response > 0) {
+                res.status(200).send({message: "Successfully updated!", response: {
+                    category: req.body.dream.category,
+                    content: req.body.dream.content,
+                    isNSFW: req.body.dream.isNSFW
+                }})
+            } else {
+                res.status(401).send({message: "Update failed."})
+            }
+        })
+    }
 })
 
 router.delete('/delete/:id', (req, res) => {
-    dreamModel.destroy({where: {
-        id: req.params.id,
-        userId: req.user.id
-    }})
-    .then(response => {
-        if (response > 0) {
-            res.status(200).send({message: "Successfully deleted!",
-            })
-        } else {
-            res.status(401).send({message: "Delete failed."})
-        }
-    })
+    if (req.user.isAdmin) {
+        dreamModel.destroy({where: {
+            id: req.params.id,
+        }})
+        .then(response => {
+            if (response > 0) {
+                res.status(200).send({message: "Successfully deleted!",
+                })
+            } else {
+                res.status(401).send({message: "Delete failed."})
+            }
+        })
+    } else {
+        dreamModel.destroy({where: {
+            id: req.params.id,
+            userId: req.user.id
+        }})
+        .then(response => {
+            if (response > 0) {
+                res.status(200).send({message: "Successfully deleted!",
+                })
+            } else {
+                res.status(401).send({message: "Delete failed."})
+            }
+        })
+    }
 })
 
 module.exports = router;
