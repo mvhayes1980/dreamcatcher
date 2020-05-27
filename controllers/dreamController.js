@@ -1,3 +1,4 @@
+require('dotenv').config();
 const router = require('express').Router();
 const sequelize = require('../db');
 const userModel = sequelize.import('../models/userModel');

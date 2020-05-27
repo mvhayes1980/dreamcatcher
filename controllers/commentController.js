@@ -1,3 +1,4 @@
+require('dotenv').config();
 const router = require('express').Router();
 const sequelize = require('../db');
 const commentModel = sequelize.import('../models/commentModel');
