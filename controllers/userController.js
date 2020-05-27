@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const sequelize = require('../db');
 const userModel = sequelize.import('../models/userModel');
+const dreamModel = sequelize.import('../models/dreamModel')
+const commentModel = sequelize.import('../models/commentModel')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const validateSession = require('../middleware/validate-session');
@@ -15,7 +17,17 @@ router.get('/get', validateSession, (req, res) => {
         where: { id: req.user.id },
         include: ['dreams', 'comments']
     })
-    .then(user => res.status(200).json(user))
+    .then(user => res.status(200).json({
+      id: user.id,
+      username: user.username,
+      isAdmin: user.isAdmin,
+      nsfwOk: user.nsfwOk,
+      profilePic: user.profilePic,
+      dreams: user.dreams,
+      comments: user.comments
+    }
+
+    ))
     .catch(err => res.status(500).json({error: err}))
 });
 
@@ -40,7 +52,7 @@ router.post('/create', (req, res) => {
         let token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: 60 * 60 * 24 });
   
         res.json({
-          user: user,
+          user: user.username,
           message: 'Dreamer Created!',
           sessionToken: token
         });
@@ -89,15 +101,17 @@ router.post('/create', (req, res) => {
    *** DELETE USER ***
   ************************** */
 
- router.delete("/delete/:id", validateSession, (req, res) => {
-    userModel.destroy({where: { 
-      id: req.params.id
-    },
-    returning: true 
+ router.delete("/delete", validateSession, (req, res) => {
+    commentModel.destroy({where: {userId: req.user.id}})
+      .then(()=> {
+        dreamModel.destroy({where: {userId: req.user.id}})
+        .then(()=> {
+          userModel.destroy({where: {id: req.user.id}, returning: true})
+            .then(user => res.status(200).json(user))
+            .catch(err => res.status(500).json({ error: err }))
+        });
+      })
   })
-    .then(user => res.status(200).json(user))
-    .catch(err => res.status(500).json({ error: err }))
-  });
 
   /* *************************
    *** UPDATE USER ***
