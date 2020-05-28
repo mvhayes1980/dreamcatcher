@@ -18,17 +18,18 @@ module.exports = (req, res, next) => {
             jwt.verify(sessionToken, process.env.JWT_SECRET, (err, decoded) => {
                 if(decoded) {
                     //search for user with the id returned from the token
-                    User.findOne({where: {id: decoded.id}}).then(user => {
-                        req.user = user;
-                        next();
-                    },
-                    () => {
-                        //no user found with that id
-                        res.status(401).send({error: "Not authorized."});
-                    })
+                    User.findOne({where: {id: decoded.id}})
+                        .then(user => {
+                            req.user = user;
+                            next();
+                        },
+                            () => {
+                                //no user found with that id
+                                res.status(401).send({error: "Not authorized.", code: "badToken"});
+                        })
                 } else {
                     //session token did not clear the secret check
-                    res.status(401).send({error: "not authorized."});
+                    res.status(401).send({error: "not authorized.", code: "badToken"});
                 }
             })
         }   
