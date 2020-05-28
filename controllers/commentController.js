@@ -5,16 +5,16 @@ const commentModel = sequelize.import('../models/commentModel');
 
 //insert endpoints here
 router.post('/create', (req, res) => {
-    const commentFromRequest = {
+    commentModel.create({
         content: req.body.comment.content,
         userId: req.user.id,
         dreamId: req.body.comment.dreamId
-    }
+    })
     commentModel.create(commentFromRequest)
         .then(comment => res.status(200).json(comment))
         .catch(err => res.status(500).json({
             error: err
-        }))
+        }))   
 });
 
 
