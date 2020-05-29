@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
         isNSFW: {
             type: DataTypes.BOOLEAN,
             allowNull: false
+        },
+        title: {
+            type: DataTypes.STRING,
+            allowNull: false
         }
     })
 }
