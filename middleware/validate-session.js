@@ -21,6 +21,7 @@ module.exports = (req, res, next) => {
                     //search for user with the id returned from the token
                     User.findOne({where: {id: decoded.id}})
                         .then(user => {
+                            console.log("FOUND ONE")
                             req.user = user;
                             next();
                         },

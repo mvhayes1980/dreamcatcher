@@ -10,7 +10,8 @@ router.post('/create', (req, res) => {
         userId: req.user.id,
         content: req.body.dream.content,
         category: req.body.dream.category,
-        isNSFW: req.body.dream.isNSFW
+        isNSFW: req.body.dream.isNSFW,
+        title: req.body.dream.title
     })
         .then(response => {
             res.status(200).send({ response: response })
@@ -34,7 +35,8 @@ router.put('/update/:id', (req, res) => {
         dreamModel.update({
             category: req.body.dream.category,
             content: req.body.dream.content,
-            isNSFW: req.body.dream.isNSFW
+            isNSFW: req.body.dream.isNSFW,
+            title: req.body.dream.title
         }, {
             where: {
                 id: req.params.id
@@ -57,26 +59,28 @@ router.put('/update/:id', (req, res) => {
         dreamModel.update({
             category: req.body.dream.category,
             content: req.body.dream.content,
-            isNSFW: req.body.dream.isNSFW
+            isNSFW: req.body.dream.isNSFW,
+            title: req.body.dream.title
         }, {
             where: {
                 id: req.params.id,
                 userId: req.user.id
             }
         })
-            .then(response => {
-                if (response > 0) {
-                    res.status(200).send({
-                        message: "Successfully updated!", response: {
-                            category: req.body.dream.category,
-                            content: req.body.dream.content,
-                            isNSFW: req.body.dream.isNSFW
-                        }
-                    })
-                } else {
-                    res.status(401).send({ message: "Update failed." })
-                }
-            })
+
+        .then(response => {
+            if (response > 0) {
+                res.status(200).send({message: "Successfully updated!", response: {
+                    category: req.body.dream.category,
+                    content: req.body.dream.content,
+                    isNSFW: req.body.dream.isNSFW,
+                    title: req.body.dream.title
+                }})
+            } else {
+                res.status(401).send({message: "Update failed."})
+            }
+        })
+
     }
 })
 
