@@ -1,3 +1,4 @@
+require('dotenv').config();
 let jwt = require('jsonwebtoken');
 let sequelize = require('../db');
 let User = sequelize.import('../models/userModel');

@@ -4,7 +4,7 @@ const app = express();
 const dotenv = require('dotenv');
 dotenv.config();
 
-//modules that require .db need the obscured environment postgres password varialbe
+//modules that require .db need the obscured environment postgres password variable
 const userController = require('./controllers/userController');
 const dreamController = require('./controllers/dreamController');
 const commentController = require('./controllers/commentController');
