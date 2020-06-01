@@ -21,7 +21,8 @@ router.get('/:category', (req, res) => {
     dreamModel.findAll({
         where: {
             category: req.params.category
-        }
+        },
+        include: "comments"
     })
     .then(response => {
         res.status(200).send({response: response})
