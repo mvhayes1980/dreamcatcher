@@ -23,7 +23,10 @@ router.get('/:category', (req, res) => {
         where: {
             category: req.params.category
         },
-        include: 'comments'
+        include: "comments"
+    })
+    .then(response => {
+        res.status(200).send({response: response})
     })
         .then(response => {
             res.status(200).send({ response: response })
