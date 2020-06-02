@@ -15,7 +15,24 @@ const validateSession = require('../middleware/validate-session');
 router.get('/get', validateSession, (req, res) => {
     userModel.findOne({
         where: { id: req.user.id },
-        include: ['dreams', 'comments']
+        include: [
+          {
+            model: dreamModel,
+            include: [{
+              model: userModel,
+              attributes: ["username", "profilePic"]
+            },{
+              model: commentModel,
+              include:[{
+                model: userModel,
+                attributes:["username", "profilePic"]
+              }]
+            }]
+          }, {
+            model: commentModel,
+            include:["dream"]
+          }
+        ]
     })
     .then(user => res.status(200).json({
       id: user.id,
