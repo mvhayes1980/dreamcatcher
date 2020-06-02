@@ -29,6 +29,9 @@ router.get('/:category', (req, res) => {
               model: userModel,
               attributes:["username", "profilePic"]
             }]
+          }, {
+              model: userModel,
+              attributes: ["username", "profilePic"]
           }]
     })
     .then(response => {

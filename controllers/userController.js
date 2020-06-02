@@ -19,6 +19,9 @@ router.get('/get', validateSession, (req, res) => {
           {
             model: dreamModel,
             include: [{
+              model: userModel,
+              attributes: ["username", "profilePic"]
+            },{
               model: commentModel,
               include:[{
                 model: userModel,
