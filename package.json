@@ -5,9 +5,9 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./node_modules/http-server/bin/http-server"
+    "start": "node app.js"
   },
-  "author": "Jerad Lollar",
+  "author": "Jihad Jerad",
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
