@@ -20,15 +20,18 @@ router.get('/get', validateSession, (req, res) => {
           {
             model: dreamModel,
             include: [{
+              model: userModel,
+              attributes: ["username", "profilePic"]
+            },{
               model: commentModel,
-              include: [{
+              include:[{
                 model: userModel,
-                attributes: ["username", "profilePic"]
+                attributes:["username", "profilePic"]
               }]
             }]
           }, {
             model: commentModel,
-            include: ["dream"]
+            include:["dream"]
           }
         ]
     })
