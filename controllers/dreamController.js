@@ -1,3 +1,4 @@
+require('dotenv').config();
 const router = require('express').Router();
 const sequelize = require('../db');
 const userModel = sequelize.import('../models/userModel');
@@ -13,9 +14,9 @@ router.post('/create', (req, res) => {
         isNSFW: req.body.dream.isNSFW,
         title: req.body.dream.title
     })
-    .then(response => {
-        res.status(200).send({response: response})
-    })
+        .then(response => {
+            res.status(200).send({ response: response })
+        })
 })
 
 router.get('/:category', (req, res) => {
@@ -36,7 +37,11 @@ router.get('/:category', (req, res) => {
     })
     .then(response => {
         res.status(200).send({response: response})
+
     })
+        .then(response => {
+            res.status(200).send({ response: response })
+        })
 })
 
 router.put('/update/:id', (req, res) => {
@@ -51,17 +56,19 @@ router.put('/update/:id', (req, res) => {
                 id: req.params.id
             }
         })
-        .then(response => {
-            if (response > 0) {
-                res.status(200).send({message: "Successfully updated!", response: {
-                    category: req.body.dream.category,
-                    content: req.body.dream.content,
-                    isNSFW: req.body.dream.isNSFW
-                }})
-            } else {
-                res.status(401).send({message: "Update failed."})
-            }
-        })
+            .then(response => {
+                if (response > 0) {
+                    res.status(200).send({
+                        message: "Successfully updated!", response: {
+                            category: req.body.dream.category,
+                            content: req.body.dream.content,
+                            isNSFW: req.body.dream.isNSFW
+                        }
+                    })
+                } else {
+                    res.status(401).send({ message: "Update failed." })
+                }
+            })
     } else {
         dreamModel.update({
             category: req.body.dream.category,
@@ -74,6 +81,7 @@ router.put('/update/:id', (req, res) => {
                 userId: req.user.id
             }
         })
+
         .then(response => {
             if (response > 0) {
                 res.status(200).send({message: "Successfully updated!", response: {
@@ -86,35 +94,42 @@ router.put('/update/:id', (req, res) => {
                 res.status(401).send({message: "Update failed."})
             }
         })
+
     }
 })
 
 router.delete('/delete/:id', (req, res) => {
     if (req.user.isAdmin) {
-        dreamModel.destroy({where: {
-            id: req.params.id,
-        }})
-        .then(response => {
-            if (response > 0) {
-                res.status(200).send({message: "Successfully deleted!",
-                })
-            } else {
-                res.status(401).send({message: "Delete failed."})
+        dreamModel.destroy({
+            where: {
+                id: req.params.id,
             }
         })
+            .then(response => {
+                if (response > 0) {
+                    res.status(200).send({
+                        message: "Successfully deleted!",
+                    })
+                } else {
+                    res.status(401).send({ message: "Delete failed." })
+                }
+            })
     } else {
-        dreamModel.destroy({where: {
-            id: req.params.id,
-            userId: req.user.id
-        }})
-        .then(response => {
-            if (response > 0) {
-                res.status(200).send({message: "Successfully deleted!",
-                })
-            } else {
-                res.status(401).send({message: "Delete failed."})
+        dreamModel.destroy({
+            where: {
+                id: req.params.id,
+                userId: req.user.id
             }
         })
+            .then(response => {
+                if (response > 0) {
+                    res.status(200).send({
+                        message: "Successfully deleted!",
+                    })
+                } else {
+                    res.status(401).send({ message: "Delete failed." })
+                }
+            })
     }
 })
 
