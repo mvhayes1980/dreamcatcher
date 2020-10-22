@@ -20,12 +20,12 @@ router.get('/get', validateSession, (req, res) => {
             model: dreamModel,
             include: [{
               model: userModel,
-              attributes: ["username", "profilePic"]
+              attributes: ["username", "email", "profilePic"]
             },{
               model: commentModel,
               include:[{
                 model: userModel,
-                attributes:["username", "profilePic"]
+                attributes:["username", "email", "profilePic"]
               }]
             }]
           }, {
@@ -37,6 +37,7 @@ router.get('/get', validateSession, (req, res) => {
     .then(user => res.status(200).json({
       id: user.id,
       username: user.username,
+      email: user.email,
       isAdmin: user.isAdmin,
       nsfwOk: user.nsfwOk,
       profilePic: user.profilePic,
@@ -54,12 +55,14 @@ router.get('/get', validateSession, (req, res) => {
 
 router.post('/create', (req, res) => {
     let username = req.body.username;
+    let email = req.body.email;
     let password = req.body.password;
     let nsfwOk = req.body.nsfwOk;
     let profilePic = req.body.profilePic;
   
     userModel.create({
       username: username,
+      email: email,
       passwordhash: bcrypt.hashSync(password, 13),
       isAdmin: false,
       nsfwOk: nsfwOk,

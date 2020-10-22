@@ -10,7 +10,7 @@ const dreamController = require('./controllers/dreamController');
 const commentController = require('./controllers/commentController');
 const sequelize = require('./db');
 
-sequelize.sync();
+sequelize.sync({force:true});
 
 app.use(express.json());
 app.use(require('./middleware/headers'));
