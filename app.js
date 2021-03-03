@@ -1,6 +1,6 @@
 const express = require('express'); //1
 const app = express();
-
+const cors = require('cors');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -14,7 +14,7 @@ sequelize.sync();
 
 app.use(express.json());
 app.use(require('./middleware/headers'));
-
+app.use(cors());
 //exposed routes
 app.use('/api/users', userController);
 
