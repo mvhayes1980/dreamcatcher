@@ -1,20 +1,22 @@
-require('dotenv').config();
 const Sequelize = require("sequelize");
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
-    dialect: "postgres"
+const sequelize = new Sequelize(process.env.DATABASE_URL+ "?sslmode=require", {
+    dialect: "postgres",
+    // dialectOptions: {
+    //     ssl: (process.env.PG_USER == "postgres") ? null : {require: true, rejectUnauthorized: false}
+    // }
 })
 
 
-sequelize.authenticate().then(() => {
-    console.log("Connected to postgres database")
-}, err => {
-    console.error(err);
-})
+// sequelize.authenticate().then(() => {
+//     console.log("Connected to postgres database")
+// }, err => {
+//     console.error(err);
+// })
 
 //db associations setup
-const userModel = sequelize.import('./models/userModel');
-const dreamModel = sequelize.import('./models/dreamModel');
-const commentModel = sequelize.import('./models/commentModel');
+const userModel = require('./models/userModel');
+const dreamModel = require('./models/dreamModel');
+const commentModel = require('./models/commentModel');
 
 userModel.hasMany(dreamModel);
 dreamModel.belongsTo(userModel);
@@ -25,4 +27,5 @@ commentModel.belongsTo(dreamModel);
 userModel.hasMany(commentModel);
 commentModel.belongsTo(userModel);
 
+console.log("about to export from db");
 module.exports = sequelize;
