@@ -1,7 +1,7 @@
 require('dotenv').config();
 let jwt = require('jsonwebtoken');
 let sequelize = require('../db');
-let User = sequelize.import('../models/userModel');
+let User = require('../models/userModel')(sequelize);
 
 module.exports = (req, res, next) => {
     //if preflight options check, just let it through without headers

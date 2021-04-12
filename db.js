@@ -1,9 +1,9 @@
 const Sequelize = require("sequelize");
 const sequelize = new Sequelize(process.env.DATABASE_URL+ "?sslmode=require", {
     dialect: "postgres",
-    // dialectOptions: {
-    //     ssl: (process.env.PG_USER == "postgres") ? null : {require: true, rejectUnauthorized: false}
-    // }
+    dialectOptions: {
+        ssl: (process.env.PG_USER == "postgres") ? null : {require: true, rejectUnauthorized: false}
+    }
 })
 
 
@@ -14,9 +14,9 @@ const sequelize = new Sequelize(process.env.DATABASE_URL+ "?sslmode=require", {
 // })
 
 //db associations setup
-const userModel = require('./models/userModel');
-const dreamModel = require('./models/dreamModel');
-const commentModel = require('./models/commentModel');
+const userModel = require('./models/userModel')(sequelize);
+const dreamModel = require('./models/dreamModel')(sequelize);
+const commentModel = require('./models/commentModel')(sequelize);
 
 userModel.hasMany(dreamModel);
 dreamModel.belongsTo(userModel);

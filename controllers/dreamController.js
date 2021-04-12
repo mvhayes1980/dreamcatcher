@@ -1,8 +1,8 @@
 const router = require('express').Router();
 const sequelize = require('../db');
-const userModel = sequelize.import('../models/userModel');
-const dreamModel = sequelize.import('../models/dreamModel');
-const commentModel = sequelize.import('../models/commentModel')
+const userModel = require('../models/userModel')(sequelize);
+const dreamModel = require('../models/dreamModel')(sequelize);
+const commentModel = require('../models/commentModel')(sequelize)
 
 //insert endpoints here
 router.post('/create', (req, res) => {
