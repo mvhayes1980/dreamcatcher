@@ -1,9 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const sequelize = require('../db');
-const userModel = require('../models/userModel')(sequelize);
-const dreamModel = require('../models/dreamModel')(sequelize);
-const commentModel = require('../models/commentModel')(sequelize);
+
+// const userModel = require('../models/userModel')(sequelize);
+// const dreamModel = require('../models/dreamModel')(sequelize);
+// const commentModel = require('../models/commentModel')(sequelize);
+const userModel = require('../db-associations').userModel;
+const dreamModel = require('../db-associations').dreamModel;
+const commentModel = require('../db-associations').commentModel;
+
+// require('../db-associations')(userModel,dreamModel,commentModel);
+
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const validateSession = require('../middleware/validate-session');
@@ -18,19 +25,24 @@ router.get('/get', validateSession, (req, res) => {
         include: [
           {
             model: dreamModel,
-            include: [{
-              model: userModel,
-              attributes: ["username", "email", "profilePic"]
-            },{
-              model: commentModel,
-              include:[{
+            include: [
+              {
                 model: userModel,
-                attributes:["username", "email", "profilePic"]
-              }]
-            }]
-          }, {
+                attributes: ["username", "profilePic"]
+              },
+              {
+                model: commentModel,
+                include:[
+                  {
+                    model: userModel,
+                    attributes:["username", "profilePic"]
+                  }]
+              }
+            ]
+          }, 
+          {
             model: commentModel,
-            include:["dream"]
+            include:[dreamModel]
           }
         ]
     })
@@ -46,7 +58,7 @@ router.get('/get', validateSession, (req, res) => {
     }
 
     ))
-    .catch(err => res.status(500).json({error: err}))
+    .catch((err) => res.status(500).json({error: err}))
 });
 
 /* *************************

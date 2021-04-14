@@ -1,7 +1,13 @@
 require('dotenv').config();
 const router = require('express').Router();
-const sequelize = require('../db');
-const commentModel = require('../models/commentModel')(sequelize);
+const commentModel = require('../db-associations').commentModel;
+
+
+// const commentModel = require('../models/commentModel')(sequelize);
+// const userModel = require('../models/userModel')(sequelize);
+// const dreamModel = require('../models/dreamModel')(sequelize);
+
+// require('../db-associations')(userModel,dreamModel,commentModel);
 
 
 

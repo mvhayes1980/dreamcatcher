@@ -1,8 +1,15 @@
 const router = require('express').Router();
 const sequelize = require('../db');
-const userModel = require('../models/userModel')(sequelize);
-const dreamModel = require('../models/dreamModel')(sequelize);
-const commentModel = require('../models/commentModel')(sequelize)
+
+const userModel = require('../db-associations').userModel;
+const dreamModel = require('../db-associations').dreamModel;
+const commentModel = require('../db-associations').commentModel;
+
+// const userModel = require('../models/userModel')(sequelize);
+// const dreamModel = require('../models/dreamModel')(sequelize);
+// const commentModel = require('../models/commentModel')(sequelize)
+
+// require('../db-associations')(userModel,dreamModel,commentModel);
 
 //insert endpoints here
 router.post('/create', (req, res) => {
@@ -36,6 +43,10 @@ router.get('/:category', (req, res) => {
     })
     .then(response => {
         res.status(200).send({response: response})
+    })
+    .catch(err => {
+        console.error(err);
+        res.json({error: err});
     })
 })
 
@@ -91,29 +102,44 @@ router.put('/update/:id', (req, res) => {
 
 router.delete('/delete/:id', (req, res) => {
     if (req.user.isAdmin) {
-        dreamModel.destroy({where: {
-            id: req.params.id,
-        }})
-        .then(response => {
-            if (response > 0) {
-                res.status(200).send({message: "Successfully deleted!",
+        commentModel.destroy({where:{
+            dreamId: req.params.id
+        }}).then(commentDeleteCount => {
+            dreamModel.destroy({where: {
+                id: req.params.id,
+            }})
+            .then(response => {
+                if (response > 0) {
+                    res.status(200).send({message: "Successfully deleted!",
+                    })
+                } else {
+                    res.status(401).send({message: "Delete failed."})
+                }
+            })
+
+        })
+    } else {
+        dreamModel.findOne({
+            where: !(req.user.isAdmin) ? {id:req.params.id, userId: req.user.id} : {id:req.params.id}
+        }).then(dream => {
+            if (dream) {
+                commentModel.destroy({where: {
+                    dreamId: req.params.id
+                }}).then(commentDesroyCount =>{
+                    dreamModel.destroy({
+                        where: !(req.user.isAdmin) ? {id:req.params.id, userId: req.user.id} : {id:req.params.id}
+                    }).then(dreamDestroyCount=> {
+                        console.log(`Successfully deleted ${dreamDestroyCount} dreams and ${commentDesroyCount} comments.`);
+                        res.status(200).send({message: `Successfully deleted ${dreamDestroyCount} dreams and ${commentDesroyCount} comments.`})  
+                    })
                 })
             } else {
                 res.status(401).send({message: "Delete failed."})
             }
         })
-    } else {
-        dreamModel.destroy({where: {
-            id: req.params.id,
-            userId: req.user.id
-        }})
-        .then(response => {
-            if (response > 0) {
-                res.status(200).send({message: "Successfully deleted!",
-                })
-            } else {
-                res.status(401).send({message: "Delete failed."})
-            }
+        .catch(err => {
+            console.error(err);
+            res.status(500).send({error: err});
         })
     }
 })

@@ -18,14 +18,15 @@ const userModel = require('./models/userModel')(sequelize);
 const dreamModel = require('./models/dreamModel')(sequelize);
 const commentModel = require('./models/commentModel')(sequelize);
 
-userModel.hasMany(dreamModel);
+// console.log("------------------------USER MODEL OUTPUT THINGY", userModel.hasMany(dreamModel));
 dreamModel.belongsTo(userModel);
+userModel.hasMany(dreamModel);
 
-dreamModel.hasMany(commentModel);
 commentModel.belongsTo(dreamModel);
+dreamModel.hasMany(commentModel);
 
-userModel.hasMany(commentModel);
 commentModel.belongsTo(userModel);
+userModel.hasMany(commentModel);
 
-console.log("about to export from db");
+console.log("DB ASSOCIATIONS SET UP");
 module.exports = sequelize;

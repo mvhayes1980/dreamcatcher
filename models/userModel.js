@@ -31,6 +31,4 @@ const DataTypes = require('sequelize').DataTypes;
              }
          })
 }
-
-
 module.exports = User;

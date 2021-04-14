@@ -1,5 +1,5 @@
 const DataTypes = require('sequelize').DataTypes;
-module.exports = (sequelize) => {
+DreamModel = (sequelize) => {
     return sequelize.define('dream', {
         content: {
             type: DataTypes.STRING,
@@ -23,3 +23,5 @@ module.exports = (sequelize) => {
         }
     })
 }
+
+module.exports = DreamModel;
